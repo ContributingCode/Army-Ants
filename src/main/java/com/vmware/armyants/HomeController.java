@@ -1,7 +1,15 @@
 package com.vmware.armyants;
 
-import java.text.DateFormat;
-import java.util.Date;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.store.LockObtainFailedException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -18,7 +26,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
+
+	@Autowired
+	private DocStore repo;
+	@Autowired
+	private LuceneIndexer searchEngine;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -26,13 +38,29 @@ public class HomeController {
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! the client locale is "+ locale.toString());
 		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		if (repo.mongoTemplate != null) {
+			model.addAttribute("dbinit", "yes");
+		} else {
+			model.addAttribute("dbinit", "no");
+		}
 		
-		String formattedDate = dateFormat.format(date);
+		// Create 2 entries in mongoDB
+		repo.deleteDocStore();
+		repo.createDocStore();
+		repo.addDocsToStore("test1", "Lucene in action");
+		repo.addDocsToStore("test2", "Eclipse is for java");
 		
-		model.addAttribute("serverTime", formattedDate );
-		
+		try {
+			searchEngine.indexDocs();
+			String[] results = searchEngine.search("lucene");
+			for(String result : results) {
+				model.addAttribute("result", result);
+			}
+		} catch (Exception e) {
+			logger.info("Exception in Lucene" + e);
+		}
+		String environmentName = (System.getenv("VCAP_APPLICATION") != null) ? "Cloud" : "Local";
+		model.addAttribute("environmentName", environmentName);
 		return "home";
 	}
 	
