@@ -3,6 +3,8 @@
  */
 package com.vmware.armyants;
 
+import java.net.URI;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,8 +16,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class DocType {
 	
 	@Id
+	private String Id;
 	private String name;
 	private String body;
+	private URI url;
 	
 	public DocType(String name, String body) {
 		this.name = name;

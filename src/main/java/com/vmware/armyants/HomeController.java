@@ -1,15 +1,7 @@
 package com.vmware.armyants;
 
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.store.LockObtainFailedException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -52,10 +44,11 @@ public class HomeController {
 		
 		try {
 			searchEngine.indexDocs();
-			String[] results = searchEngine.search("lucene");
+			String[] results = searchEngine.search("eclipse");
 			for(String result : results) {
 				model.addAttribute("result", result);
 			}
+			searchEngine.addRFPToStore(new DocType("rfp1","dummy body"));
 		} catch (Exception e) {
 			logger.info("Exception in Lucene" + e);
 		}

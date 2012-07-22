@@ -38,12 +38,15 @@ public class LuceneIndexer {
 	private static final Logger logger = LoggerFactory.getLogger(LuceneIndexer.class);
 	// The place from where you fetch the documents
 	private DocStore repo;
+	// The place where you get RFPs
+	private DocStore RFPrepo;
 	// The directory where Lucene will store its indexes - could be jdbc/inmemory/any db
 	private Directory dir;
 	private Analyzer analyzer;
 	
-	public LuceneIndexer(DocStore repo) {
+	public LuceneIndexer(DocStore repo, DocStore RFPrepo) {
 		this.repo = repo;
+		this.RFPrepo = RFPrepo;
 		analyzer = new StandardAnalyzer(Version.LUCENE_40);
 	}
 
@@ -100,5 +103,10 @@ public class LuceneIndexer {
 	        logger.info("collecting result");
 	      }
 	    return results;
+	}
+	
+	public void addRFPToStore(DocType doc) {
+		RFPrepo.addDocsToStore(doc.getName(), doc.getBody());
+		logger.info("added RFP");
 	}
 }
