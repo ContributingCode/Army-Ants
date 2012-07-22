@@ -23,6 +23,7 @@ public class HomeController {
 	private DocStore repo;
 	@Autowired
 	private LuceneIndexer searchEngine;
+	private ScheduledMatcher sm;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
