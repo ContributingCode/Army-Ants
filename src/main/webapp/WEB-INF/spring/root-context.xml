@@ -5,6 +5,7 @@
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
         http://www.springframework.org/schema/context
@@ -12,7 +13,9 @@
         http://schema.cloudfoundry.org/spring
         http://schema.cloudfoundry.org/spring/cloudfoundry-spring.xsd
         http://www.springframework.org/schema/task  
-		http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+		http://www.springframework.org/schema/task/spring-task-3.0.xsd
+		http://www.springframework.org/schema/data/mongo
+		http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
 	
 	<context:annotation-config/>
 	<context:component-scan base-package="com.vmware.armyants" />
@@ -28,10 +31,14 @@
 	</bean>
 	
 	<!-- database for document store -->
-	
-	<cloud:mongo-db-factory id="testDocStore"/>
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg ref="testDocStore"/> 	
 	</bean>
+	<beans profile="default">
+		<mongo:db-factory id="testDocStore" dbname="test" host="127.0.0.1" port="27017" username="" password=""/>
+	</beans>
 	
+	<beans profile="cloud">
+		<cloud:mongo-db-factory id="testDocStore"/>
+	</beans>
 </beans>

@@ -23,6 +23,17 @@
 			<name>Spring Maven MILESTONE Repository</name>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
+		<repository>
+            <id>org.twitter4j</id>
+            <name>org.twitter4j</name>
+            <url>http://org.twitter4j/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 	</repositories>
 	
 	<dependencies>
@@ -59,6 +70,13 @@
 	        <version>${org.cloudfoundry-version}</version>
     	</dependency>
     	
+    	<!-- Twitter -->
+    	<dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-core</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        
     	<!-- Lucene -->
     	<dependency>
     		<groupId>org.apache.lucene</groupId>
@@ -75,7 +93,6 @@
 			<artifactId>lucene-analyzers-common</artifactId>
 			<version>4.0.0-ALPHA</version>
 		</dependency>
-            
             
 			
 		<!-- AspectJ -->
