@@ -46,6 +46,8 @@ public class LuceneIndexer {
 	
 	public LuceneIndexer(DocStore repo) {
 		this.repo = repo;
+		this.repo.deleteDocStore(DocStore.CIVIC_COMMONS_COLLECTION);
+		this.repo.deleteDocStore(DocStore.RFP_COLLECTION);
 		this.repo.createDocStore(DocStore.CIVIC_COMMONS_COLLECTION);
 		this.repo.createDocStore(DocStore.RFP_COLLECTION);
 		analyzer = new StandardAnalyzer(Version.LUCENE_40);
