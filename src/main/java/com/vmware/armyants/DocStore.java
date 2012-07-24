@@ -15,27 +15,30 @@ import org.slf4j.LoggerFactory;
 public class DocStore {
 	
 	static final Logger Logger = LoggerFactory.getLogger(DocStore.class);
+	public static String CIVIC_COMMONS_COLLECTION="civic-commons";
+	public static String RFP_COLLECTION="rfp";
+	public static String USERS_INFO="users-info";
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
 
-	public void addDocsToStore(String name, String body) {
+	public void addDocsToStore(String collection, String name, String body) {
 		Logger.info("inserting " + name);
-		mongoTemplate.insert(new DocType(name, body));
+		mongoTemplate.insert(new DocType(name, body), collection);
 	}
 
-	public void createDocStore() {
+	public void createDocStore(String collection) {
 		Logger.info("Creating DocStore ");
-		mongoTemplate.createCollection(DocType.class);
+		mongoTemplate.createCollection(collection);
 	}
 
-	public void deleteDocStore() {
+	public void deleteDocStore(String collection) {
 		Logger.info("deleting DocStore ");
-		mongoTemplate.dropCollection(DocType.class);
+		mongoTemplate.dropCollection(collection);
 	}
 
-	public Iterator<DocType> retrieveDocs() {
-		List<DocType> allData = mongoTemplate.findAll(DocType.class);
+	public Iterator<DocType> retrieveDocs(String collection) {
+		List<DocType> allData = mongoTemplate.findAll(DocType.class, collection);
 		return allData.iterator();
 	}
 }

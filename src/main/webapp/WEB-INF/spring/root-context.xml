@@ -24,10 +24,8 @@
 	<!-- Lucene beans -->
 	
 	<bean id="repo" class="com.vmware.armyants.DocStore" autowire="byName" />
-	<bean id="rfpStore" class="com.vmware.armyants.DocStore" autowire="byName" />
-	<bean id="searchEngine" class="com.vmware.armyants.LuceneIndexer">
+	<bean id="searchEngine" class="com.vmware.armyants.LuceneIndexer" autowire="byName">
 		<constructor-arg ref="repo" />
-		<constructor-arg  ref="rfpStore"/>
 	</bean>
 	
 	<!-- database for document store -->

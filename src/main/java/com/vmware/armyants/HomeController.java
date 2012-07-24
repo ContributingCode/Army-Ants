@@ -42,7 +42,7 @@ public class HomeController {
 		logger.info("Welcome home! the client locale is "+ locale.toString());
 		
 		try {
-			searchEngine.indexDocs();
+			searchEngine.indexDocs("civic-commons");
 			String[] results = searchEngine.search("eclipse");
 			for(String result : results) {
 				model.addAttribute("result", result);

@@ -12,5 +12,6 @@
 <P> Env: ${environmentName} </P>
 <P> Creating mongodbtemplate? : ${dbinit} </P>
 <P> Search Result: ${result} </P>
+
 </body>
 </html>

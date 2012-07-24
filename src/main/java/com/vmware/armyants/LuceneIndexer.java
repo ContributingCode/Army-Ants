@@ -39,15 +39,15 @@ public class LuceneIndexer {
 	private static final Logger logger = LoggerFactory.getLogger(LuceneIndexer.class);
 	// The place from where you fetch the documents
 	private DocStore repo;
-	// The place where you get RFPs
-	private DocStore RFPrepo;
 	// The directory where Lucene will store its indexes - could be jdbc/inmemory/any db
 	private Directory dir;
 	private Analyzer analyzer;
 	
-	public LuceneIndexer(DocStore repo, DocStore RFPrepo) {
+	
+	public LuceneIndexer(DocStore repo) {
 		this.repo = repo;
-		this.RFPrepo = RFPrepo;
+		this.repo.createDocStore(DocStore.CIVIC_COMMONS_COLLECTION);
+		this.repo.createDocStore(DocStore.RFP_COLLECTION);
 		analyzer = new StandardAnalyzer(Version.LUCENE_40);
 	}
 
@@ -58,12 +58,12 @@ public class LuceneIndexer {
 	 * @throws LockObtainFailedException 
 	 * @throws CorruptIndexException 
 	 */
-	public void indexDocs() throws CorruptIndexException, LockObtainFailedException, IOException {
+	public void indexDocs(String collection) throws CorruptIndexException, LockObtainFailedException, IOException {
 		dir = new RAMDirectory();
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
 		IndexWriter writer = new IndexWriter(dir, config);
 		
-		for (Iterator<DocType> it = repo.retrieveDocs(); it.hasNext();) {
+		for (Iterator<DocType> it = repo.retrieveDocs(collection); it.hasNext();) {
 			logger.info("added doc");
 			addDoc(writer, it.next());
 		}
@@ -107,7 +107,7 @@ public class LuceneIndexer {
 	}
 	
 	public void addRFPToStore(DocType doc) {
-		RFPrepo.addDocsToStore(doc.getName(), doc.getBody());
+		repo.addDocsToStore(DocStore.RFP_COLLECTION,doc.getName(), doc.getBody());
 		logger.info("added RFP");
 	}
 }
