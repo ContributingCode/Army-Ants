@@ -5,18 +5,23 @@
 <head>
 	<title>Home</title>
 	<script type="text/javascript">
-
+	$(body).add
 	</script>
+	<link href="resources/css/home.css" rel="stylesheet" type="text/css"/>
+	<link href="resources/css/style.css" rel="stylesheet" type="text/css"/>
+
 </head>
 <body>
-<div id="header" style="background-color:#ccc">
-	Army-Ants
+<div id="header">
+<h1>
+	ARMY-ANTS
+</h1>
 </div>
-<p> search result: ${result}</p>
 <div id="signin">     
     <f:form action="/login" method="post" enctype="multipart/form-data">
    		<input type="image" src="resources/images/sign-in-with-twitter.png" name="twitterImage" />
     </f:form>
 </div>
+
 </body>
 </html>

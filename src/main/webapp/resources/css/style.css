@@ -1,0 +1,13 @@
+body
+{
+	background-color:#1BE0D3;	
+	text-align:center;	
+}
+
+#header h1{
+	background-color:#1BBCE0;
+	padding: 20px 20px 20px 20px;	
+	margin: 20px auto;
+	-webkit-border-radius: 8px 8px 8px 8px; 
+   	font-size: 20px;
+}

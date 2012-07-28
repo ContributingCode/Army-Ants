@@ -1,0 +1,20 @@
+#content
+{
+	background-color:#fff;
+	-webkit-border-radius: 16px 16px 16px 16px; 
+	font-size: 16px;
+	margin-top: 40px;
+	text-align: center;
+	overflow:auto;
+}
+
+#item
+{
+	background-color:#ccc;
+	-webkit-border-radius: 8px 8px 8px 8px; 
+	height: 40px;
+	font-size: 16px;
+	margin-top: 10px;
+	width: 90%;
+	text-align:center;
+}
