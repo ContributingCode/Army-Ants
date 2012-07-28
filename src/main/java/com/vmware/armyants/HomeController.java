@@ -40,7 +40,6 @@ public class HomeController {
 		logger.info("Welcome home! the client locale is "+ locale.toString());
 		
 		try {
-			searchEngine.indexDocs("civic-commons");
 			String[] results = searchEngine.search("latitude and longitude");
 			for(String result : results) {
 				model.addAttribute("result", result);

@@ -74,7 +74,7 @@ public class LuceneIndexer {
 		}
 		writer.close();
 	}
-	@Scheduled(fixedDelay = 24 * 60 * 60 * 1000)
+	@Scheduled(fixedDelay = 86400000)
 	public void indexDocs() throws CorruptIndexException, LockObtainFailedException, IOException {
 		String collection = DocStore.CIVIC_COMMONS_COLLECTION;
 		dir = new RAMDirectory();
