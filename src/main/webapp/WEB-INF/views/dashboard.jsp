@@ -4,7 +4,7 @@
 </head>
 <body>
 <h1>
-	Dashboard page  
+	Welcome ${user_name}
 </h1>
 </body>
 </html>

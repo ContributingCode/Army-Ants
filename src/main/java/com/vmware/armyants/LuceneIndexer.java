@@ -5,8 +5,10 @@
 package com.vmware.armyants;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -29,9 +31,7 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -104,8 +104,9 @@ public class LuceneIndexer {
 	 * @return
 	 * @throws ParseException 
 	 * @throws IOException 
+	 * @throws URISyntaxException 
 	 */
-	public String[] search(String query) throws ParseException, IOException {
+	public List<AppType> search(String query) throws ParseException, IOException, URISyntaxException {
 		Query q = new QueryParser(Version.LUCENE_40, "body", analyzer).parse(query);
 		logger.info(q.toString());
 		int hitsPerPage = 10;
@@ -114,28 +115,62 @@ public class LuceneIndexer {
 	    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
 	    searcher.search(q, collector);
 	    ScoreDoc[] hits = collector.topDocs().scoreDocs;
+	    
+	    // Got results here
 	    logger.info("# score docs = " + hits.length);
-	    String results[] = new String[hits.length];
-	    for(int i=0; i<hits.length; ++i) {
+	    
+	    ArrayList<AppType> results = new ArrayList<AppType>();
+	    for(int i = 0; i<hits.length; ++i) {
 	        int docId = hits[i].doc;
 	        Document d = searcher.doc(docId);
-	        results[i] = d.get("body");
+	        results.add(new AppType(d.get("name"), d.get("body"), new URI(d.get("url"))));
 	        logger.info("collecting result");
 	      }
 	    return results;
 	}
 	
-	public void addRFPToStore(AppType doc) {
+	public void addRFPToStore(RFPCollectionType doc) {
 		repo.addDocsToStore(DocStore.RFP_COLLECTION,doc);
 		logger.info("added RFP");
 	}
 	
-	public void addRFPToUser(String userName, String name, String body) {
-		repo.addRFPToUser(userName, name, body);
+	public void addRFPToUser(String userName, RFPCollectionType rfp) {
+		// add this RFP to mongodb
+		addRFPToStore(rfp);
 	}
 	
 	
-	public ArrayList<AppType> getAllRFPsForUser(String userName) {
+	public List<RFPCollectionType> getAllRFPsForUser(String userName) {
 		return repo.getAllRFPsForUser(userName);
+	}
+	
+	public ArrayList<AppType> getAppsForRFPbyId(String userName, int id, boolean searchNow) throws ParseException, IOException, URISyntaxException {
+		// If search now, then initiate search for this rfp id
+		if (searchNow) {
+			populateSearchResults(userName, id);
+		}
+		return repo.getAppsForRFPbyId(id);
+	}
+	
+	/*
+	 * Get the body of the RFP
+	 * Make that the query
+	 * Query the civic commons database using the 'search' method
+	 * Get the results i.e the apps
+	 */
+	public boolean populateSearchResults(String userName, int RFPId) throws ParseException, IOException, URISyntaxException {
+		// Fetch RFP from docstore
+		RFPCollectionType rfp = repo.fetchRFPbyId(RFPId);
+		// Search using that rfp as query in lucene indexer
+		List<AppType> searchAppResults = search(rfp.getRfpBody());
+		// Update RFP appList in docstore
+		ArrayList<Integer> appList = new ArrayList<Integer>();
+		for (AppType app : searchAppResults) {
+			appList.add(app.getId());
+		}
+		rfp.setAppList(appList);
+		// Put the updated RFP with the searchresults back into docstore
+		addRFPToUser(userName, rfp);
+		return true;
 	}
 }

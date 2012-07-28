@@ -19,6 +19,13 @@ public class AppType {
 	private int Id;
 	private String name;
 	private String body;
+	public int getId() {
+		return Id;
+	}
+
+	public void setId(int id) {
+		Id = id;
+	}
 	private URI url;
 	
 	public AppType(String name, String body, URI url) {

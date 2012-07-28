@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +23,6 @@ public class DocStore {
 	static final Logger Logger = LoggerFactory.getLogger(DocStore.class);
 	public static String CIVIC_COMMONS_COLLECTION="civic-commons";
 	public static String RFP_COLLECTION="rfp";
-	// UserInfoType
-	public static String USERS_INFO="users-info";
-	// RFPResults
-	public static String SEARCH_RESULTS="search-results";
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
@@ -50,6 +46,16 @@ public class DocStore {
 		return mongoTemplate.getCollection(collection).find();
 	}
 	
+	public RFPCollectionType fetchRFPbyId(int id) {
+		Query query = new Query(Criteria.where("id").is(id));
+		return mongoTemplate.findAndRemove(query, RFPCollectionType.class);
+	}
+	
+	public AppType fetchAppById(int id) {
+		Query query = new Query(Criteria.where("id").is(id));
+		return mongoTemplate.findOne(query, AppType.class);
+	}
+	
 	public void addRFPToUser(String userName, String name, String body) {
 		
 	}
@@ -58,14 +64,17 @@ public class DocStore {
 		
 	}
 	
-	public ArrayList<AppType> getAllRFPsForUser(String userName) {
-		UserInfoType userInfo = mongoTemplate.findById(123, UserInfoType.class, USERS_INFO);
-		ArrayList<Integer> RFPIds = userInfo.getUserToRFPMapping().get(userName);
+	public List<RFPCollectionType> getAllRFPsForUser(String userName) {
+		Query query = new Query(Criteria.where("userName").is(userName));
+		return mongoTemplate.find(query, RFPCollectionType.class, RFP_COLLECTION);
+	}
+	
+	public ArrayList<AppType> getAppsForRFPbyId(int id) {
+		ArrayList<Integer> appsId = fetchRFPbyId(id).getAppList();
 		ArrayList<AppType> results = new ArrayList<AppType>();
-		for (int id : RFPIds) {
-			AppType app = mongoTemplate.findById(id, AppType.class, CIVIC_COMMONS_COLLECTION);
-			results.add(app);
+		for (int eachAppId : appsId) {
+			results.add(fetchAppById(eachAppId));
 		}
 		return results;
-	} 
+	}
 }
