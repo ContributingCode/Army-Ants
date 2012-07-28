@@ -31,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+
 /**
  * @author rukmani
  */
@@ -65,19 +68,31 @@ public class LuceneIndexer {
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
 		IndexWriter writer = new IndexWriter(dir, config);
 		
-		for (Iterator<DocType> it = repo.retrieveDocs(collection); it.hasNext();) {
+		for (DBCursor it = repo.retrieveDocs(collection); it.hasNext();) {
 			logger.info("added doc");
 			addDoc(writer, it.next());
 		}
 		writer.close();
 	}
-	
-	private void addDoc(IndexWriter writer, DocType document) throws IOException {
+	@Scheduled(fixedDelay = 24 * 60 * 60 * 1000)
+	public void indexDocs() throws CorruptIndexException, LockObtainFailedException, IOException {
+		String collection = DocStore.CIVIC_COMMONS_COLLECTION;
+		dir = new RAMDirectory();
+		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
+		IndexWriter writer = new IndexWriter(dir, config);
+		
+		for (DBCursor it = repo.retrieveDocs(collection); it.hasNext();) {
+			logger.info("added doc from scheduler");
+			addDoc(writer, it.next());
+		}
+		writer.close();
+	}
+	private void addDoc(IndexWriter writer, DBObject document) throws IOException {
 		Document luceneDoc = new Document();
 		FieldType type = new FieldType();
 		type.setIndexed(true);
-		luceneDoc.add(new Field("title", document.getName(), type));
-		luceneDoc.add(new Field("body", document.getBody(), Field.Store.YES, Field.Index.ANALYZED));
+		luceneDoc.add(new Field("title", (String) document.get("name"), type));
+		luceneDoc.add(new Field("body", (String) document.get("body"), Field.Store.YES, Field.Index.ANALYZED));
 		writer.addDocument(luceneDoc);
 	}
 	
@@ -108,8 +123,8 @@ public class LuceneIndexer {
 	    return results;
 	}
 	
-	public void addRFPToStore(DocType doc) {
-		repo.addDocsToStore(DocStore.RFP_COLLECTION,doc.getName(), doc.getBody());
+	public void addRFPToStore(AppType doc) {
+		repo.addDocsToStore(DocStore.RFP_COLLECTION,doc);
 		logger.info("added RFP");
 	}
 }

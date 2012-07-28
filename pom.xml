@@ -94,7 +94,13 @@
 			<version>4.0.0-ALPHA</version>
 		</dependency>
             
-			
+		<!-- JSON dependency -->	
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>org.json</artifactId>
+			<version>chargebee-1.0</version>
+		</dependency>
+		
 		<!-- AspectJ -->
 		<dependency>
 			<groupId>org.aspectj</groupId>

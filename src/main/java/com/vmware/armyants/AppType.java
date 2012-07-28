@@ -13,17 +13,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  */
 @Document
-public class DocType {
+public class AppType {
 	
 	@Id
-	private String Id;
+	private int Id;
 	private String name;
 	private String body;
 	private URI url;
 	
-	public DocType(String name, String body) {
+	public AppType(String name, String body, URI url) {
 		this.name = name;
 		this.body = body;
+		this.Id = url.hashCode();
+		this.url = url;
 	}
 	
 	public String getName() {

@@ -30,7 +30,6 @@ import twitter4j.auth.RequestToken;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
 	@Autowired
 	private LuceneIndexer searchEngine;
 	/**
@@ -42,11 +41,10 @@ public class HomeController {
 		
 		try {
 			searchEngine.indexDocs("civic-commons");
-			String[] results = searchEngine.search("eclipse");
+			String[] results = searchEngine.search("latitude and longitude");
 			for(String result : results) {
 				model.addAttribute("result", result);
 			}
-			searchEngine.addRFPToStore(new DocType("rfp1","dummy body"));
 		} catch (Exception e) {
 			logger.info("Exception in Lucene" + e);
 		} 
