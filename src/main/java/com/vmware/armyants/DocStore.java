@@ -1,6 +1,7 @@
 package com.vmware.armyants;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.*;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 
 
 @Repository
@@ -54,7 +53,19 @@ public class DocStore {
 	public void addRFPToUser(String userName, String name, String body) {
 		
 	}
-	/*
-	public DBCursor getAllRFPsForUser(String userName) {
-	} */
+	
+	public void findAppsForRFPs(){
+		
+	}
+	
+	public ArrayList<AppType> getAllRFPsForUser(String userName) {
+		UserInfoType userInfo = mongoTemplate.findById(123, UserInfoType.class, USERS_INFO);
+		ArrayList<Integer> RFPIds = userInfo.getUserToRFPMapping().get(userName);
+		ArrayList<AppType> results = new ArrayList<AppType>();
+		for (int id : RFPIds) {
+			AppType app = mongoTemplate.findById(id, AppType.class, CIVIC_COMMONS_COLLECTION);
+			results.add(app);
+		}
+		return results;
+	} 
 }

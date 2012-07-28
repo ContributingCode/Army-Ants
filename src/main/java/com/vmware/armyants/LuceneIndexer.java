@@ -5,6 +5,7 @@
 package com.vmware.armyants;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -133,10 +134,8 @@ public class LuceneIndexer {
 		repo.addRFPToUser(userName, name, body);
 	}
 	
-	/*
-	public DBCursor getAllRFPsForUser(String userName) {
+	
+	public ArrayList<AppType> getAllRFPsForUser(String userName) {
 		return repo.getAllRFPsForUser(userName);
-	}*/
-	
-	
+	}
 }
