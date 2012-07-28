@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mongodb.*;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
@@ -23,7 +24,10 @@ public class DocStore {
 	static final Logger Logger = LoggerFactory.getLogger(DocStore.class);
 	public static String CIVIC_COMMONS_COLLECTION="civic-commons";
 	public static String RFP_COLLECTION="rfp";
+	// UserInfoType
 	public static String USERS_INFO="users-info";
+	// RFPResults
+	public static String SEARCH_RESULTS="search-results";
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
@@ -46,4 +50,11 @@ public class DocStore {
 	public DBCursor retrieveDocs(String collection) {
 		return mongoTemplate.getCollection(collection).find();
 	}
+	
+	public void addRFPToUser(String userName, String name, String body) {
+		
+	}
+	/*
+	public DBCursor getAllRFPsForUser(String userName) {
+	} */
 }

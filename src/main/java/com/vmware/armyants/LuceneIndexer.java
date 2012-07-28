@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -127,4 +128,15 @@ public class LuceneIndexer {
 		repo.addDocsToStore(DocStore.RFP_COLLECTION,doc);
 		logger.info("added RFP");
 	}
+	
+	public void addRFPToUser(String userName, String name, String body) {
+		repo.addRFPToUser(userName, name, body);
+	}
+	
+	/*
+	public DBCursor getAllRFPsForUser(String userName) {
+		return repo.getAllRFPsForUser(userName);
+	}*/
+	
+	
 }

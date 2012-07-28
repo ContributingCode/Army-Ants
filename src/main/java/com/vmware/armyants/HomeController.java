@@ -59,7 +59,7 @@ public class HomeController {
         try {
             StringBuffer callbackURL = request.getRequestURL();
             int index = callbackURL.lastIndexOf("/");
-            callbackURL.replace(index, callbackURL.length(), "").append("/callback");
+            callbackURL.replace(index, callbackURL.length(), "").append("/dashboard");
 
             RequestToken requestToken = twitter.getOAuthRequestToken(callbackURL.toString());
             request.getSession().setAttribute("requestToken", requestToken);
@@ -70,5 +70,10 @@ public class HomeController {
         } catch (IOException e) {
 			logger.info(e.toString());
 		}
+	}
+	
+	@RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+	public String dashboardPage(HttpServletRequest request, HttpServletResponse response) {
+		return "dashboard";
 	}
 }
