@@ -138,8 +138,7 @@ public class HomeController {
     }
 	
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	@ResponseBody
-    public String searchPage(HttpServletRequest request, HttpServletResponse response,Map<String, Object> model) throws IllegalStateException, TwitterException, ParseException, IOException, URISyntaxException {
+    public String searchPage(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws IllegalStateException, TwitterException, ParseException, IOException, URISyntaxException {
 		// Get username
 		Twitter twitter = (Twitter) request.getSession().getAttribute("twitter");
 		String userName = twitter.getScreenName();

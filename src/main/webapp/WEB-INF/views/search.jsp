@@ -15,32 +15,6 @@
 	$(document).ready(function(){
 		$(".collapse").collapse();
 	});
-	
-		$(".launch_modal").click(
-				function(e) {
-					e.preventDefault();
-					if ($("#launch_modal").find(".error").length > 0)
-						return false
-					var $form = $(this)
-					// Run Ajax 
-					$.ajax({
-						url : $form.attr("action"),
-						data : $form.serializeArray(),
-						type : "POST",
-						success : function(response) {
-							if (response.err) {
-								$('#add2_form').find(".help-block").html(
-										response.data)
-								$('#add2_form').find('.control-group')
-										.addClass("error")
-							} else {
-								$('#add2_form').find(".help-block").html(
-										response.data)
-							}
-						}
-					})
-					return false
-				});
 	</script>
 	
 	    <!-- Le styles -->
