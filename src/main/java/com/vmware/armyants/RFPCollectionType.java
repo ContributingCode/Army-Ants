@@ -7,21 +7,29 @@ public class RFPCollectionType{
     private String userName;
     private String rfpName;
     private String rfpBody;
-    private ArrayList<Integer> appList;
+    private ArrayList<String> appList;
     
     
-    public RFPCollectionType(String userName, String rfpName, String rfpBody){
+    public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public RFPCollectionType(String userName, String rfpName, String rfpBody){
         this.id = rfpName.hashCode();
         this.userName = userName;
         this.rfpName = rfpName;
         this.rfpBody = rfpBody;
     }
     
-    public ArrayList<Integer> getAppList() {
+    public ArrayList<String> getAppList() {
 		return appList;
 	}
 
-	public void setAppList(ArrayList<Integer> appList) {
+	public void setAppList(ArrayList<String> appList) {
 		this.appList = appList;
 	}
 

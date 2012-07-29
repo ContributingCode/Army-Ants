@@ -46,22 +46,14 @@ public class DocStore {
 		return mongoTemplate.getCollection(collection).find();
 	}
 	
-	public RFPCollectionType fetchRFPbyId(int id) {
-		Query query = new Query(Criteria.where("id").is(id));
-		return mongoTemplate.findAndRemove(query, RFPCollectionType.class);
+	public RFPCollectionType fetchRFPbyId(String rfpName) {
+		Query query = new Query(Criteria.where("rfpName").is(rfpName));
+		return mongoTemplate.findAndRemove(query, RFPCollectionType.class, RFP_COLLECTION);
 	}
 	
-	public AppType fetchAppById(int id) {
-		Query query = new Query(Criteria.where("id").is(id));
-		return mongoTemplate.findOne(query, AppType.class);
-	}
-	
-	public void addRFPToUser(String userName, String name, String body) {
-		
-	}
-	
-	public void findAppsForRFPs(){
-		
+	public AppType fetchAppById(String rfpName) {
+		Query query = new Query(Criteria.where("rfpName").is(rfpName));
+		return mongoTemplate.findOne(query, AppType.class, CIVIC_COMMONS_COLLECTION);
 	}
 	
 	public List<RFPCollectionType> getAllRFPsForUser(String userName) {
@@ -69,10 +61,10 @@ public class DocStore {
 		return mongoTemplate.find(query, RFPCollectionType.class, RFP_COLLECTION);
 	}
 	
-	public ArrayList<AppType> getAppsForRFPbyId(int id) {
-		ArrayList<Integer> appsId = fetchRFPbyId(id).getAppList();
+	public ArrayList<AppType> getAppsForRFPbyId(String rfpName) {
+		ArrayList<String> appsId = fetchRFPbyId(rfpName).getAppList();
 		ArrayList<AppType> results = new ArrayList<AppType>();
-		for (int eachAppId : appsId) {
+		for (String eachAppId : appsId) {
 			results.add(fetchAppById(eachAppId));
 		}
 		return results;

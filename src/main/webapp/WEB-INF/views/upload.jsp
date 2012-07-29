@@ -1,8 +1,4 @@
 <html>
-<head>
-<link rel="stylesheet" href="/twitter-bootstrap/twitter-bootstrap-v2/docs/assets/css/bootstrap.css">
-
-</head>
 <body>
 
 <%@ page import="java.util.*" %>

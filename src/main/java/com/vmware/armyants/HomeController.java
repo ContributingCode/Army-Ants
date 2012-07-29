@@ -1,13 +1,17 @@
 package com.vmware.armyants;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,16 +100,15 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/dashboard", method = RequestMethod.GET)
-	public String dashboardPage(HttpServletRequest request, HttpServletResponse response, Model model) throws IllegalStateException, TwitterException {
+	public String dashboardPage(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws IllegalStateException, TwitterException {
+		// Get username
 		Twitter twitter = (Twitter) request.getSession().getAttribute("twitter");
 		String userName = twitter.getScreenName();
-		model.addAttribute("user_name", userName);
+		
+		// Collect all RFPs this user has uploaded and display them
 		List<RFPCollectionType> rfpsForUser = searchEngine.getAllRFPsForUser(userName);
-		model.addAttribute("count", rfpsForUser.size());
-		for (int i = 0; i < rfpsForUser.size(); i++) {
-			model.addAttribute("rfpname" + i, rfpsForUser.get(i).getRfpName());
-			model.addAttribute("rfpbody" + i, rfpsForUser.get(i).getRfpBody());
-		}
+		
+		model.put("rfpcollection",rfpsForUser);
 		logger.info(userName);
 		return "dashboard";
 	}
@@ -118,9 +121,40 @@ public class HomeController {
 	}
 
 	
-	@RequestMapping(value = "upload", method = RequestMethod.POST)
-    public String attachReceipt(@RequestParam("upload_file") MultipartFile file) {
-        logger.info("File Uploaded");
-		return "upload";
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	@ResponseBody
+    public void attachReceipt(HttpServletRequest request, 
+    		@RequestParam("upload_file") MultipartFile file,HttpServletResponse response) throws IOException, IllegalStateException, TwitterException {
+		// Get user name for upload
+		Twitter twitter = (Twitter) request.getSession().getAttribute("twitter");
+		String userName = twitter.getScreenName();
+		// Get file details
+		String filename = file.getOriginalFilename();
+		String body = new String(file.getBytes());
+		logger.info(body);
+		// Store to mongodb here
+		searchEngine.addRFPToUser(userName, new RFPCollectionType(userName, filename, body));
+        response.sendRedirect(request.getContextPath()+ "/dashboard");
     }
+	
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	@ResponseBody
+    public String searchPage(HttpServletRequest request, HttpServletResponse response,Map<String, Object> model) throws IllegalStateException, TwitterException, ParseException, IOException, URISyntaxException {
+		// Get username
+		Twitter twitter = (Twitter) request.getSession().getAttribute("twitter");
+		String userName = twitter.getScreenName();
+
+		// Collect all RFPs this user has uploaded and display them
+		List<RFPCollectionType> rfpsForUser = searchEngine.getAllRFPsForUser(userName);
+		
+		ArrayList<AppType> results = new ArrayList<AppType>();
+		// Collect all searchresults for user
+		for (RFPCollectionType rfp : rfpsForUser) {
+			for( AppType app : searchEngine.getAppsForRFPbyId(userName, rfp.getRfpName(), true)) {
+				results.add(app);
+			}
+		}
+		model.put("search_results",	results);
+		return "search";
+	}
 }

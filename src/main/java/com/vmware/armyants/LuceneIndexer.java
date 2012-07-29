@@ -123,7 +123,7 @@ public class LuceneIndexer {
 	    for(int i = 0; i<hits.length; ++i) {
 	        int docId = hits[i].doc;
 	        Document d = searcher.doc(docId);
-	        results.add(new AppType(d.get("name"), d.get("body"), new URI(d.get("url"))));
+	        results.add(new AppType(d.get("name"), d.get("body"), d.get("url")));
 	        logger.info("collecting result");
 	      }
 	    return results;
@@ -136,6 +136,7 @@ public class LuceneIndexer {
 	
 	public void addRFPToUser(String userName, RFPCollectionType rfp) {
 		// add this RFP to mongodb
+		rfp.setUserName(userName);
 		addRFPToStore(rfp);
 	}
 	
@@ -144,12 +145,12 @@ public class LuceneIndexer {
 		return repo.getAllRFPsForUser(userName);
 	}
 	
-	public ArrayList<AppType> getAppsForRFPbyId(String userName, int id, boolean searchNow) throws ParseException, IOException, URISyntaxException {
+	public ArrayList<AppType> getAppsForRFPbyId(String userName, String rfpName, boolean searchNow) throws ParseException, IOException, URISyntaxException {
 		// If search now, then initiate search for this rfp id
 		if (searchNow) {
-			populateSearchResults(userName, id);
+			populateSearchResults(userName, rfpName);
 		}
-		return repo.getAppsForRFPbyId(id);
+		return repo.getAppsForRFPbyId(rfpName);
 	}
 	
 	/*
@@ -158,15 +159,15 @@ public class LuceneIndexer {
 	 * Query the civic commons database using the 'search' method
 	 * Get the results i.e the apps
 	 */
-	public boolean populateSearchResults(String userName, int RFPId) throws ParseException, IOException, URISyntaxException {
+	public boolean populateSearchResults(String userName, String rfpName) throws ParseException, IOException, URISyntaxException {
 		// Fetch RFP from docstore
-		RFPCollectionType rfp = repo.fetchRFPbyId(RFPId);
+		RFPCollectionType rfp = repo.fetchRFPbyId(rfpName);
 		// Search using that rfp as query in lucene indexer
 		List<AppType> searchAppResults = search(rfp.getRfpBody());
 		// Update RFP appList in docstore
-		ArrayList<Integer> appList = new ArrayList<Integer>();
+		ArrayList<String> appList = new ArrayList<String>();
 		for (AppType app : searchAppResults) {
-			appList.add(app.getId());
+			appList.add(app.getName());
 		}
 		rfp.setAppList(appList);
 		// Put the updated RFP with the searchresults back into docstore

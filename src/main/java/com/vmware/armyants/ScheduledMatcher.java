@@ -57,7 +57,7 @@ public class ScheduledMatcher {
 		for (int i = 0; i < json_datastore_array.length() - 2; i++) {
 			JSONObject civic_app_item = json_datastore_array
 					.getJSONObject(i);
-			URI app_url = new URI((String) civic_app_item.get("url"));
+			String app_url = (String) civic_app_item.get("url");
 			String app_name = civic_app_item.get("name").toString();
 			String app_description = civic_app_item.get("description")
 					.toString();
