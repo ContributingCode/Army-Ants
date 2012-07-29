@@ -76,14 +76,15 @@ public class LuceneIndexer {
 		}
 		writer.close();
 	}
-	@Scheduled(fixedDelay = 30000)
+	@Scheduled(fixedDelay = 300000)
 	public void indexDocs() throws CorruptIndexException, LockObtainFailedException, IOException {
 		String collection = DocStore.CIVIC_COMMONS_COLLECTION;
 		dir = new RAMDirectory();
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
 		IndexWriter writer = new IndexWriter(dir, config);
 		
-		for (DBCursor it = repo.retrieveDocs(collection); it.hasNext();) {
+		DBCursor it = repo.retrieveDocs(collection);
+		while (it.hasNext()) {
 			logger.info("added doc from scheduler");
 			addDoc(writer, it.next());
 		}

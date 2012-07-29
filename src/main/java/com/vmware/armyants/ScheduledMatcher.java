@@ -36,7 +36,7 @@ public class ScheduledMatcher {
 		return sb.toString();
 	}
 
-	@Scheduled(fixedDelay = 86400000)
+	@Scheduled(fixedDelay = 30000)
 	public void repeatableTask() throws ParseException, IOException,
 	JSONException, URISyntaxException {
 		logger.info("Running scheduled task");

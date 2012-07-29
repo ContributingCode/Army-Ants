@@ -28,8 +28,8 @@ public class DocStore {
 	MongoTemplate mongoTemplate;
 
 	public void addDocsToStore(String collection, Object document) {
-		Logger.info("inserting ");
-		mongoTemplate.insert(document, collection);
+		Logger.info("inserting " + collection);
+		mongoTemplate.insert((AppType)document, collection);
 	}
 
 	public void createDocStore(String collection) {

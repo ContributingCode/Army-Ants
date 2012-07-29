@@ -143,6 +143,7 @@ public class HomeController {
 		Twitter twitter = (Twitter) request.getSession().getAttribute("twitter");
 		String userName = twitter.getScreenName();
 
+		searchEngine.indexDocs(DocStore.CIVIC_COMMONS_COLLECTION);
 		// Collect all RFPs this user has uploaded and display them
 		List<RFPCollectionType> rfpsForUser = searchEngine.getAllRFPsForUser(userName);
 		
