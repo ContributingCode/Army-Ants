@@ -30,25 +30,25 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <a class="btn btn-navbar"  data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Army Ants</a>
+          <a class="brand" href="#" style="height: 90px; font-size: 40px;margin-top: 20px;">Army Ants</a>
           <div class="nav-collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
+            
+          <span style="float:left; font-size:25px; margin-top:45px; margin-left: 30px; color:#fff;"><i>Software-hunt stops here</i></span>
+        	
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
-<div id="signin">     
-    <a href="login"><img src="resources/images/sign-in-with-twitter.png"></img></a>
+<div id="signin"> 
+	<span style="border-width:8px; -webkit-border-radius: 16px	">
+	</span>    
+    <a href="login"><img src="resources/images/sign-in-with-twitter.png" style="margin-top:140px"></img></a>
 </div>
 
 </body>

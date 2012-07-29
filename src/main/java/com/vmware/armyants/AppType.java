@@ -32,7 +32,7 @@ public class AppType {
 	public AppType(String name, String body, String url) {
 		this.name = name;
 		this.body = body;
-		this.Id = url.hashCode();
+		//this.Id = url.hashCode();
 		this.url = url;
 	}
 	
