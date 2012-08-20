@@ -15,19 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class AppType {
 	
-	@Id
-	private int Id;
 	private String name;
 	private String body;
 	private String url;
-	
-	public int getId() {
-		return Id;
-	}
-
-	public void setId(int id) {
-		Id = id;
-	}
 	
 	public AppType(String name, String body, String url) {
 		this.name = name;

@@ -2,10 +2,8 @@ package com.vmware.armyants;
 
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.lucene.util.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,10 +26,12 @@ public class DocStore {
 	MongoTemplate mongoTemplate;
 
 	public void addDocsToStore(String collection, Object document) {
-		Logger.info("inserting " + collection);
-		mongoTemplate.insert((AppType)document, collection);
+		mongoTemplate.insert(document, collection);
 	}
-
+	public void addAppsToStore(ArrayList<AppType> list) {
+		mongoTemplate.insert(list, CIVIC_COMMONS_COLLECTION);
+	}
+	
 	public void createDocStore(String collection) {
 		Logger.info("Creating DocStore ");
 		mongoTemplate.createCollection(collection);
@@ -52,7 +52,7 @@ public class DocStore {
 	}
 	
 	public AppType fetchAppById(String rfpName) {
-		Query query = new Query(Criteria.where("rfpName").is(rfpName));
+		Query query = new Query(Criteria.where("name").is(rfpName));
 		return mongoTemplate.findOne(query, AppType.class, CIVIC_COMMONS_COLLECTION);
 	}
 	
@@ -62,11 +62,15 @@ public class DocStore {
 	}
 	
 	public ArrayList<AppType> getAppsForRFPbyId(String rfpName) {
-		ArrayList<String> appsId = fetchRFPbyId(rfpName).getAppList();
+		// fetch removes the RFP from store
+		RFPCollectionType rfp = fetchRFPbyId(rfpName);
+		ArrayList<String> appsId = rfp.getAppList();
 		ArrayList<AppType> results = new ArrayList<AppType>();
 		for (String eachAppId : appsId) {
 			results.add(fetchAppById(eachAppId));
 		}
+		// put it back
+		addDocsToStore(RFP_COLLECTION, rfp);
 		return results;
 	}
 }

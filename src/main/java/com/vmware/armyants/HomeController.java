@@ -45,15 +45,6 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! the client locale is "+ locale.toString());
-		
-		try {
-			List<AppType> results = searchEngine.search("latitude and longitude");
-			for(AppType result : results) {
-				model.addAttribute("result", result.getName());
-			}
-		} catch (Exception e) {
-			logger.info("Exception in Lucene" + e);
-		} 
 		String environmentName = (System.getenv("VCAP_APPLICATION") != null) ? "Cloud" : "Local";
 		model.addAttribute("environmentName", environmentName);
 		return "home";

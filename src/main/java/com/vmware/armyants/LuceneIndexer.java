@@ -94,7 +94,7 @@ public class LuceneIndexer {
 		Document luceneDoc = new Document();
 		FieldType type = new FieldType();
 		type.setIndexed(true);
-		luceneDoc.add(new Field("title", (String) document.get("name"), type));
+		luceneDoc.add(new Field("name", (String) document.get("name"), Field.Store.YES, Field.Index.ANALYZED));
 		luceneDoc.add(new Field("body", (String) document.get("body"), Field.Store.YES, Field.Index.ANALYZED));
 		writer.addDocument(luceneDoc);
 	}

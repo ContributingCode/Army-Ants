@@ -24,7 +24,7 @@
 	<!-- Lucene beans -->
 	
 	<bean id="repo" class="com.vmware.armyants.DocStore" autowire="byName" />
-	<bean id="searchEngine" class="com.vmware.armyants.LuceneIndexer" autowire="byName">
+	<bean id="searchEngine" class="com.vmware.armyants.LuceneIndexer" autowire="byName" scope="singleton">
 		<constructor-arg ref="repo" />
 	</bean>
 	
@@ -32,6 +32,8 @@
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg ref="testDocStore"/> 	
 	</bean>
+	
+	<!-- Profiles -->
 	<beans profile="default">
 		<mongo:db-factory id="testDocStore" dbname="test" host="127.0.0.1" port="27017" username="" password=""/>
 	</beans>
